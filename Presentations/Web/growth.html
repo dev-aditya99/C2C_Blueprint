@@ -1,0 +1,457 @@
+<!-- Chosen Palette: Brilliant Blues -->
+<!-- Application Structure Plan: The SPA is designed as an interactive dashboard, departing from a linear report format. A sticky navigation bar allows users to jump to key sections: Dashboard, Roadmap, Market, and Strategy. The core interaction is a monthly filter on the main Dashboard, which dynamically updates KPIs and a central growth chart. This user-controlled, non-linear exploration allows stakeholders (investors, team) to quickly synthesize information by month or theme, making the 5-month plan tangible and explorable rather than static. This structure was chosen to prioritize engagement and provide a clear, high-level overview upfront, with options to drill down into specifics. -->
+<!-- Visualization & Content Choices: 
+- Overall Growth: Goal: Change -> Viz: Interactive Line Chart -> Interaction: Data dynamically shown up to the selected month -> Justification: Visualizes the core growth narrative over the 5-month plan effectively -> Library: Chart.js/Canvas.
+- Monthly KPIs: Goal: Inform -> Viz: Dynamic Stat Cards -> Interaction: Values update based on month selection -> Justification: Provides at-a-glance performance metrics for any given month -> Library: JS DOM Manipulation.
+- 5-Month Roadmap: Goal: Organize -> Viz: Interactive Tabbed Section -> Interaction: Clicking a month reveals detailed tasks -> Justification: Breaks down a dense timeline into clear, digestible stages -> Library: HTML/CSS/JS.
+- Market Opportunity: Goal: Inform -> Viz: Donut Chart (for Trust Deficit) -> Interaction: Hover tooltips -> Justification: Clearly highlights the core market problem (COD preference) that Woovle solves -> Library: Chart.js/Canvas.
+- Revenue Model: Goal: Organize -> Viz: HTML/CSS Diagram -> Interaction: Hover effects on components -> Justification: Visually explains the business model without relying on static images or prohibited libraries -> Library: HTML/CSS.
+- Marketing Channels: Goal: Compare -> Viz: Horizontal Bar Chart -> Interaction: Hover tooltips -> Justification: Ranks marketing channels by impact, clarifying the go-to-market strategy -> Library: Chart.js/Canvas.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woovle: Interactive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F4F8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-link {
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: #1E40AF;
+        }
+        .month-selector button.active {
+            background-color: #1D4ED8;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);
+        }
+        .tab-btn.active {
+            border-bottom-color: #1D4ED8;
+            color: #1D4ED8;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-blue-800 cursor-pointer" onclick="location.href='./index.html'">Woovle</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#dashboard" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Dashboard</a>
+                        <a href="#roadmap" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Roadmap</a>
+                        <a href="#market" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Market</a>
+                        <a href="#strategy" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Strategy</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <section id="dashboard" class="mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Growth Dashboard</h2>
+            <p class="text-lg text-gray-600 mb-6">This dashboard provides an interactive overview of our 5-month launch plan. Select a month to see projected Key Performance Indicators (KPIs) and track our growth trajectory towards revolutionizing India's C2C market.</p>
+            
+            <div class="flex justify-center mb-6">
+                <div id="month-selector" class="month-selector flex space-x-1 bg-blue-100 p-1 rounded-full">
+                    <button data-month="0" class="px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200">Oct</button>
+                    <button data-month="1" class="px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200">Nov</button>
+                    <button data-month="2" class="px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200">Dec</button>
+                    <button data-month="3" class="px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 active">Jan</button>
+                    <button data-month="4" class="px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200">Feb</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="kpi-card text-center">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Active Users</h3>
+                    <p id="kpi-users" class="mt-1 text-4xl font-bold text-blue-600">3,500</p>
+                </div>
+                <div class="kpi-card text-center">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Total Listings</h3>
+                    <p id="kpi-listings" class="mt-1 text-4xl font-bold text-blue-600">4,000</p>
+                </div>
+                <div class="kpi-card text-center">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Transactions</h3>
+                    <p id="kpi-transactions" class="mt-1 text-4xl font-bold text-blue-600">800</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-center mb-4">Projected Growth Trajectory</h3>
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Interactive 5-Month Roadmap</h2>
+            <p class="text-lg text-gray-600 mb-6">Our path to launch is meticulously planned. This section details the objectives and key results for each month. Click on a month to explore the specific tasks and responsibilities that will drive our progress from foundation to scale.</p>
+
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="border-b border-gray-200">
+                    <nav id="roadmap-tabs" class="-mb-px flex space-x-6 px-6" aria-label="Tabs">
+                        <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="1">Month 1: Foundation</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="2">Month 2: Development</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="3">Month 3: Pre-Launch</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="4">Month 4: Launch</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="5">Month 5: Optimization</button>
+                    </nav>
+                </div>
+                <div class="p-6">
+                    <div id="tab-content-1" class="tab-content active">
+                        <h4 class="font-bold text-lg mb-2">October: Foundation & Strategic Planning</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Finalize Product Roadmap and MVP feature set.</li>
+                            <li>Complete market & competitor analysis for Jaipur.</li>
+                            <li>Establish tech stack, architecture, and security protocols.</li>
+                            <li>Define founder roles: CPO/CTO and CEO/CMO.</li>
+                            <li>Handle legal incorporation and financial structuring.</li>
+                        </ul>
+                    </div>
+                    <div id="tab-content-2" class="tab-content">
+                        <h4 class="font-bold text-lg mb-2">November: MVP Development & Design</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Develop backend APIs for users, listings, and payments.</li>
+                            <li>Build responsive web and mobile app frontends.</li>
+                            <li>Integrate secure payment gateway and logistics partners.</li>
+                            <li>Conduct internal alpha testing and bug fixing sprints.</li>
+                            <li>Finalize UI/UX designs and user flow.</li>
+                        </ul>
+                    </div>
+                    <div id="tab-content-3" class="tab-content">
+                        <h4 class="font-bold text-lg mb-2">December: Pre-Launch Marketing & Community Building</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Launch pre-launch landing page and waitlist campaign.</li>
+                            <li>Initiate hyperlocal social media marketing in Jaipur.</li>
+                            <li>Engage with local tech influencers and campus ambassadors.</li>
+                            <li>Secure initial PR and media coverage.</li>
+                            <li>Aim for 5,000+ waitlist sign-ups.</li>
+                        </ul>
+                    </div>
+                    <div id="tab-content-4" class="tab-content">
+                        <h4 class="font-bold text-lg mb-2">January: Platform Launch & Initial Traction</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Official launch of Woovle web and mobile apps in Jaipur.</li>
+                            <li>Onboard waitlist users and seed initial listings.</li>
+                            <li>Monitor KPIs: user activation, listing creation, transactions.</li>
+                            <li>Gather user feedback through surveys and support channels.</li>
+                            <li>Implement initial revenue models (commissions & featured listings).</li>
+                        </ul>
+                    </div>
+                    <div id="tab-content-5" class="tab-content">
+                        <h4 class="font-bold text-lg mb-2">February: Optimization & Scalability Planning</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Analyze user data and feedback to prioritize feature updates.</li>
+                            <li>Optimize app performance, UI/UX, and user flows.</li>
+                            <li>Refine marketing strategy based on launch data.</li>
+                            <li>Develop a strategic plan for expansion to the next city.</li>
+                            <li>Begin preliminary talks for seed funding rounds.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">The Market Opportunity</h2>
+            <p class="text-lg text-gray-600 mb-6">India's C2C commerce sector is on the verge of explosive growth. However, a significant challenge remains: trust. This section visualizes the massive market potential and the core problem Woovle is built to solve.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-center mb-4">India's Second-Hand & Rental Market Growth</h3>
+                     <div class="chart-container" style="height:300px; max-height:350px;">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                     <h3 class="text-xl font-bold text-center mb-4">The Trust Deficit in Jaipur</h3>
+                     <div class="chart-container" style="height:300px; max-height:350px;">
+                        <canvas id="trustChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="strategy" class="mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Our Strategy & Revenue Model</h2>
+            <p class="text-lg text-gray-600 mb-6">Our approach is twofold: a hyper-focused market entry to build a strong community, coupled with a diversified revenue model to ensure long-term sustainability and growth.</p>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-center mb-4">Go-to-Market Strategy: Impact Score</h3>
+                    <div class="chart-container" style="height:300px; max-height:350px;">
+                        <canvas id="marketingChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                     <h3 class="text-xl font-bold text-center mb-4">Diversified Revenue Streams</h3>
+                     <div class="space-y-4 pt-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 text-white rounded-full h-10 w-10 flex items-center justify-center font-bold">75%</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-semibold">Transaction Commissions</h4>
+                                <p class="text-gray-600">A small percentage fee on every successful sale or rental, our primary revenue driver.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                             <div class="flex-shrink-0 bg-blue-400 text-white rounded-full h-10 w-10 flex items-center justify-center font-bold">15%</div>
+                             <div class="ml-4">
+                                <h4 class="text-lg font-semibold">Featured Listings</h4>
+                                <p class="text-gray-600">Sellers can pay a premium to boost the visibility of their items.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                             <div class="flex-shrink-0 bg-blue-300 text-white rounded-full h-10 w-10 flex items-center justify-center font-bold">10%</div>
+                             <div class="ml-4">
+                                <h4 class="text-lg font-semibold">Logistics & Partnerships</h4>
+                                <p class="text-gray-600">Revenue share from integrated delivery partners and value-added services.</p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-8">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="font-semibold">Woovle: Building the Future of Trusted C2C Commerce.</p>
+            <p class="text-sm text-gray-400 mt-1">&copy; 2025 Woovle Inc. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const roadmapData = {
+            months: ["October", "November", "December", "January", "February"],
+            users: [0, 50, 5500, 8500, 13500],
+            listings: [0, 100, 1000, 5000, 10000],
+            transactions: [0, 0, 0, 800, 1800],
+        };
+
+        const processLabels = (labels) => {
+            const charLimit = 16;
+            return labels.map(label => {
+                if (label.length <= charLimit) return label;
+                const words = label.split(' ');
+                const newLabels = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > charLimit) {
+                        newLabels.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) newLabels.push(currentLine.trim());
+                return newLabels;
+            });
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            return Array.isArray(label) ? label.join(' ') : label;
+        };
+
+        const growthChartCtx = document.getElementById('growthChart').getContext('2d');
+        const growthChart = new Chart(growthChartCtx, {
+            type: 'line',
+            data: {
+                labels: roadmapData.months,
+                datasets: [{
+                    label: 'Active Users',
+                    data: [],
+                    borderColor: '#1D4ED8',
+                    backgroundColor: 'rgba(29, 78, 216, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }, {
+                    label: 'Transactions',
+                    data: [],
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } } }
+            }
+        });
+        
+        const marketChartCtx = document.getElementById('marketChart').getContext('2d');
+        new Chart(marketChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2025', '2028'],
+                datasets: [
+                    {
+                        label: 'Second-Hand Market (in B USD)',
+                        data: [12.5, 25],
+                        backgroundColor: '#3B82F6',
+                    },
+                    {
+                        label: 'Rental Market (in B USD)',
+                        data: [1.5, 4],
+                        backgroundColor: '#93C5FD',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } } }
+            }
+        });
+        
+        const trustChartCtx = document.getElementById('trustChart').getContext('2d');
+        new Chart(trustChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cash on Delivery (COD) Preference', 'Online Payments', 'Other'],
+                datasets: [{
+                    data: [65, 25, 10],
+                    backgroundColor: ['#1E40AF', '#60A5FA', '#BFDBFE'],
+                    borderColor: '#F0F4F8',
+                    borderWidth: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom'}, tooltip: { callbacks: { title: tooltipTitleCallback } } }
+            }
+        });
+        
+        const marketingChartCtx = document.getElementById('marketingChart').getContext('2d');
+        new Chart(marketingChartCtx, {
+            type: 'bar',
+            data: {
+                labels: processLabels(['Campus Ambassador Programs', 'Hyperlocal Social Media Ads', 'Jaipur Tech Influencers', 'Local PR & Media Outreach']),
+                datasets: [{
+                    label: 'Projected Impact Score',
+                    data: [95, 85, 70, 60],
+                    backgroundColor: ['#1E40AF', '#3B82F6', '#60A5FA', '#93C5FD'],
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { beginAtZero: true } },
+                plugins: { legend: { display: false }, tooltip: { callbacks: { title: tooltipTitleCallback } } }
+            }
+        });
+
+        const kpiUsers = document.getElementById('kpi-users');
+        const kpiListings = document.getElementById('kpi-listings');
+        const kpiTransactions = document.getElementById('kpi-transactions');
+        const monthSelector = document.getElementById('month-selector');
+
+        function updateDashboard(monthIndex) {
+            const cumulativeUsers = roadmapData.users.slice(0, monthIndex + 1).reduce((a, b) => a + b, 0);
+            const cumulativeListings = roadmapData.listings.slice(0, monthIndex + 1).reduce((a, b) => a + b, 0);
+            const cumulativeTransactions = roadmapData.transactions.slice(0, monthIndex + 1).reduce((a, b) => a + b, 0);
+
+            kpiUsers.textContent = cumulativeUsers.toLocaleString();
+            kpiListings.textContent = cumulativeListings.toLocaleString();
+            kpiTransactions.textContent = cumulativeTransactions.toLocaleString();
+
+            growthChart.data.datasets[0].data = roadmapData.users.slice(0, monthIndex + 2);
+            growthChart.data.datasets[1].data = roadmapData.transactions.slice(0, monthIndex + 2);
+            growthChart.data.labels = roadmapData.months.slice(0, monthIndex + 2);
+            if (monthIndex < roadmapData.months.length - 1) {
+                growthChart.data.labels[monthIndex + 1] = 'Next';
+            }
+            growthChart.update();
+
+            monthSelector.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.month) === monthIndex) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        monthSelector.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const monthIndex = parseInt(e.target.dataset.month);
+                updateDashboard(monthIndex);
+            }
+        });
+
+        const roadmapTabs = document.getElementById('roadmap-tabs');
+        const tabContents = document.querySelectorAll('.tab-content');
+        roadmapTabs.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const tabNum = e.target.dataset.tab;
+                roadmapTabs.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `tab-content-${tabNum}`) {
+                        content.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard(3);
+        });
+    </script>
+</body>
+</html>

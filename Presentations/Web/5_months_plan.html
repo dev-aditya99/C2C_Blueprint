@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woovle: The 5-Month Strategic Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4;
+        }
+
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #14B8A6;
+            color: white;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 384px;
+            }
+        }
+        .flow-card {
+            background-color: #14B8A6;
+            border-left: 4px solid;
+            transition: transform 0.2s ease-in-out;
+        }
+        .flow-card:hover {
+            transform: translateY(-5px);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 1.25rem;
+            bottom: 0;
+            width: 2px;
+            background-color: #14B8A6;
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: calc(1rem - 6px);
+            top: 1.25rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #14B8A6;
+            border: 2px solid #F5F5F4;
+        }
+        /* Sidebar styles */
+        #sidebar {
+            will-change: transform;
+        }
+        @media (max-width: 767px) {
+            #sidebar {
+                transform: translateX(-110%);
+                width: 80vw;
+                max-width: 320px;
+                left: 0;
+                top: 0;
+            }
+            #mainContent {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Toggle Button -->
+        <button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-teal-500 text-white p-2 rounded-lg shadow-lg md:hidden">
+            <span id="sidebarToggleIcon">☰</span>
+        </button>
+        <nav id="sidebar" class="w-64 bg-white p-4 shadow-lg fixed h-full transition-transform duration-300 z-40">
+            <div class="flex items-center mb-8">
+                <div class="p-2 bg-teal-500 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1014.12 11.88l-4.242 4.242z" />
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold text-stone-800">Woovle</h1>
+            </div>
+            <ul>
+                <li><a href="index.html" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">💡</span> Overview
+                </a></li>
+                <li><a href="index.html#market" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">📈</span> Market Deep Dive
+                </a></li>
+                <li><a href="index.html#jaipur" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">📍</span> The Jaipur Case
+                </a></li>
+                <li><a href="index.html#edge" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">🛡️</span> Competitive Edge
+                </a></li>
+                <li><a href="index.html#roadmap" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">🗺️</span> Strategic Roadmap
+                </a></li>
+                <li><a href="index.html#model" class="nav-link flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">💰</span> Business Model
+                </a></li>
+                <li><a href="5_months_plan.html" class="nav-link active flex items-center p-3 my-1 rounded-lg nav-link active">
+                    <span class="mr-3 text-lg">⛳</span> 5 Months Plan
+                </a></li>
+                <li><a href="growth.html" class="flex items-center p-3 my-1 rounded-lg">
+                    <span class="mr-3 text-lg">✨</span> Growth Dashboard
+                </a></li>
+            </ul>
+        </nav>
+        <main id="mainContent" class="flex-1 ml-64 p-6 md:p-10 transition-all duration-300">
+            <header class="bg-white text-stone-800 p-8 text-center shadow-lg rounded-xl mb-8">
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">Woovle: The 5-Month Blueprint</h1>
+                <p class="mt-2 text-lg md:text-xl text-stone-600">A Strategic Roadmap to a Multi-Billion Dollar C2C Giant</p>
+            </header>
+            <section class="bg-white rounded-xl shadow-md p-6 mb-8 text-center">
+                <h2 class="text-3xl font-bold text-teal-600 mb-2">The Vision</h2>
+                <p class="text-lg text-stone-600 max-w-4xl mx-auto">Woovle is engineered to revolutionize India's C2C market by creating a unified, trust-centric platform for buying, selling, and renting goods. Our mission is to bridge the critical trust deficit in online transactions, providing a secure, seamless, and sustainable alternative to traditional e-commerce.</p>
+                <div class="mt-6">
+                    <p class="text-2xl font-semibold text-stone-700">Projected Indian Second-Hand & Rental Market Size by 2028</p>
+                    <p class="text-6xl font-extrabold text-red-500 mt-2">$25 Billion</p>
+                </div>
+            </section>
+            <div class="grid grid-cols-1 gap-8">
+                <!-- Month 1 -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <span class="text-sm font-semibold text-white bg-teal-500 py-1 px-3 rounded-full">Month 1: October</span>
+                    <h2 class="text-3xl font-bold mt-2">Foundation & Strategic Planning</h2>
+                    <p class="text-stone-600 mt-2 mb-6">The first month is dedicated to establishing a rock-solid foundation. We will finalize our strategy, define core functionalities, and delineate roles and responsibilities between the founders to ensure maximum efficiency and parallel progress.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="md:col-span-2">
+                            <h3 class="text-xl font-bold text-center mb-4">Founder Role Delegation</h3>
+                            <div class="flex flex-col md:flex-row justify-center gap-6">
+                                <div class="flex-1 flow-card text-white p-4 rounded-lg shadow-md" style="border-color: #14B8A6;">
+                                    <h4 class="text-lg font-bold">Founder 1: CPO/CTO</h4>
+                                    <ul class="list-disc list-inside mt-2 text-teal-50">
+                                        <li>Product Roadmap & MVP Specs</li>
+                                        <li>Tech Stack & Architecture</li>
+                                        <li>Lead Web & App Development</li>
+                                        <li>Security & Scalability Planning</li>
+                                    </ul>
+                                </div>
+                                <div class="flex-1 flow-card text-white p-4 rounded-lg shadow-md" style="border-color: #F87171;">
+                                    <h4 class="text-lg font-bold">Founder 2: CEO/CMO</h4>
+                                    <ul class="list-disc list-inside mt-2 text-teal-50">
+                                        <li>Market & Competitor Analysis</li>
+                                        <li>Branding & Go-to-Market Strategy</li>
+                                        <li>Legal & Financial Structuring</li>
+                                        <li>Partnership & Operations Setup</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Initial Focus Allocation</h3>
+                            <p class="text-stone-600 text-center mb-4">Our initial efforts are strategically distributed to ensure all critical aspects of the business are addressed concurrently, with a primary focus on technology and market research.</p>
+                            <div class="chart-container">
+                                <canvas id="focusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Month 2 -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <span class="text-sm font-semibold text-white bg-teal-500 py-1 px-3 rounded-full">Month 2: November</span>
+                    <h2 class="text-3xl font-bold mt-2">MVP Development & Design</h2>
+                    <p class="text-stone-600 mt-2 mb-6">This month is all about execution. We will be in a focused development sprint to build the core of the Woovle platform—both web and mobile apps—prioritizing features that deliver immediate value and build user trust.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">MVP Feature Prioritization</h3>
+                            <p class="text-stone-600 text-center mb-4">We are building a robust MVP by prioritizing core functionalities. Advanced features are planned for post-launch updates to ensure a lean and effective initial product.</p>
+                            <div class="chart-container">
+                                <canvas id="mvpChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Development Milestones</h3>
+                            <div class="relative pl-8">
+                                <div class="timeline-item relative pb-8">
+                                    <div class="timeline-dot"></div>
+                                    <h4 class="font-bold">Week 1: Architecture & UI/UX</h4>
+                                    <p class="text-stone-600">Finalize database schema, server architecture, and complete high-fidelity wireframes and user flow designs.</p>
+                                </div>
+                                <div class="timeline-item relative pb-8">
+                                    <div class="timeline-dot"></div>
+                                    <h4 class="font-bold">Week 2: Backend Development</h4>
+                                    <p class="text-stone-600">Build core APIs for user authentication, product listings, and secure payment gateway integration.</p>
+                                </div>
+                                <div class="timeline-item relative pb-8">
+                                    <div class="timeline-dot"></div>
+                                    <h4 class="font-bold">Week 3: Frontend Development</h4>
+                                    <p class="text-stone-600">Develop responsive web and mobile app interfaces, connecting them to the backend APIs.</p>
+                                </div>
+                                <div class="timeline-item relative pb-0">
+                                    <div class="timeline-dot"></div>
+                                    <h4 class="font-bold">Week 4: Testing & Deployment</h4>
+                                    <p class="text-stone-600">Internal alpha testing, bug fixing, and deployment to staging servers for final review before pre-launch.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Month 3 -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <span class="text-sm font-semibold text-white bg-teal-500 py-1 px-3 rounded-full">Month 3: December</span>
+                    <h2 class="text-3xl font-bold mt-2">Pre-Launch Marketing & Community Building</h2>
+                    <p class="text-stone-600 mt-2 mb-6">With the MVP nearing completion, our focus shifts to generating market buzz. The goal is to build an engaged community and a substantial waitlist of early adopters in our pilot city, Jaipur, before the official launch.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Projected Pre-Launch Waitlist Growth</h3>
+                            <p class="text-stone-600 text-center mb-4">An aggressive, multi-channel marketing push is projected to build significant momentum, aiming for over 5,000 sign-ups before launch day.</p>
+                            <div class="chart-container">
+                                <canvas id="waitlistChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Key Pre-Launch Marketing Channels</h3>
+                            <p class="text-stone-600 text-center mb-4">Our strategy focuses on high-impact, community-driven channels to maximize reach and credibility within the target demographic in Jaipur.</p>
+                            <div class="chart-container">
+                                <canvas id="marketingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Month 4 -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <span class="text-sm font-semibold text-white bg-teal-500 py-1 px-3 rounded-full">Month 4: January</span>
+                    <h2 class="text-3xl font-bold mt-2">Platform Launch & Initial Traction</h2>
+                    <p class="text-stone-600 mt-2 mb-6">The official launch of Woovle in Jaipur. This month is critical for onboarding our waitlist, facilitating the first transactions, and gathering real-world user feedback to identify immediate areas for improvement.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Launch Month Target KPIs</h3>
+                            <p class="text-stone-600 text-center mb-4">We will track key performance indicators closely to measure launch success, focusing on user engagement and platform activity.</p>
+                            <div class="chart-container">
+                                <canvas id="launchKpiChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Initial Revenue Model Mix</h3>
+                            <p class="text-stone-600 text-center mb-4">Our diversified revenue model is designed for sustainability, starting with a focus on transaction commissions and offering value-add services for power users.</p>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Month 5 -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <span class="text-sm font-semibold text-white bg-teal-500 py-1 px-3 rounded-full">Month 5: February</span>
+                    <h2 class="text-3xl font-bold mt-2">Optimization & Scalability Planning</h2>
+                    <p class="text-stone-600 mt-2 mb-6">Using data and feedback from our launch month, we will enter a cycle of rapid iteration. This involves optimizing the user experience, enhancing features, and building the strategic plan for expansion beyond Jaipur.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">User Feedback & Improvement Areas</h3>
+                            <p class="text-stone-600 text-center mb-4">Analysis of initial user feedback will guide our development priorities, ensuring we address the most impactful areas to enhance user satisfaction and retention.</p>
+                            <div class="chart-container">
+                                <canvas id="feedbackChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-center mb-4">Projected Growth Post-Launch (Next 3 Months)</h3>
+                            <p class="text-stone-600 text-center mb-4">With a refined product and proven market fit in Jaipur, we project exponential growth in user acquisition and transaction volume as we begin our expansion strategy.</p>
+                            <div class="chart-container">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white text-stone-800 mt-8 p-6 text-center rounded-xl shadow">
+                <p class="font-bold">Woovle: Building the Future of C2C Commerce in India.</p>
+                <p class="text-sm text-stone-400 mt-1">&copy; 2025 Woovle Inc. All Rights Reserved.</p>
+            </footer>
+        </main>
+    </div>
+    <script>
+        // Sidebar toggle logic
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
+        let sidebarVisible = true;
+
+        function setSidebarVisibility(visible) {
+            sidebarVisible = visible;
+            if (visible) {
+                sidebar.style.transform = 'translateX(0)';
+                mainContent.style.marginLeft = '16rem';
+                sidebarToggleIcon.textContent = '✖';
+            } else {
+                sidebar.style.transform = 'translateX(-110%)';
+                mainContent.style.marginLeft = '0';
+                sidebarToggleIcon.textContent = '☰';
+            }
+        }
+
+        sidebarToggle.addEventListener('click', () => {
+            setSidebarVisibility(!sidebarVisible);
+        });
+
+        function handleResize() {
+            if (window.innerWidth < 768) {
+                setSidebarVisibility(false);
+                sidebarToggle.style.display = 'block';
+            } else {
+                setSidebarVisibility(true);
+                sidebarToggle.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // ...existing chart JS code below...
+        const processLabels = (labels) => {
+            const charLimit = 16;
+            return labels.map(label => {
+                if (label.length <= charLimit) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const newLabels = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > charLimit) {
+                        newLabels.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) {
+                    newLabels.push(currentLine.trim());
+                }
+                return newLabels;
+            });
+        };
+
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const vibrantPalette = ['#14B8A6', '#F87171', '#FBBF24', '#6366F1', '#A78BFA'];
+
+        new Chart(document.getElementById('focusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Tech & Product Planning', 'Market & Competitor Research', 'Branding & Go-to-Market', 'Legal & Financials'],
+                datasets: [{
+                    label: 'Focus Allocation',
+                    data: [40, 30, 20, 10],
+                    backgroundColor: vibrantPalette,
+                    borderColor: '#F5F5F4',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('mvpChart'), {
+            type: 'bar',
+            data: {
+                labels: ['User Auth & Profiles', 'Listings (Buy/Sell/Rent)', 'Secure Payments', 'Logistics & Chat'],
+                datasets: [{
+                    label: 'Core MVP Features',
+                    data: [100, 100, 100, 100],
+                    backgroundColor: '#14B8A6',
+                    stack: 'Stack 0',
+                }, {
+                    label: 'Post-Launch Features',
+                    data: [20, 40, 30, 50],
+                    backgroundColor: '#F5F5F4',
+                    stack: 'Stack 0',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) { return value + "%" }
+                        }
+                    }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    tooltip: {
+                        ...tooltipTitleCallback.plugins.tooltip,
+                        callbacks: {
+                            ...tooltipTitleCallback.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + '% Development Focus';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('waitlistChart'), {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: [{
+                    label: 'Waitlist Sign-ups',
+                    data: [250, 900, 2100, 5500],
+                    borderColor: '#14B8A6',
+                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: tooltipTitleCallback.plugins,
+            }
+        });
+
+        new Chart(document.getElementById('marketingChart'), {
+            type: 'bar',
+            data: {
+                labels: processLabels(['Campus Ambassador Programs', 'Hyperlocal Social Media Ads', 'Jaipur Tech Influencers', 'Local PR & Media Outreach']),
+                datasets: [{
+                    label: 'Projected Impact Score',
+                    data: [95, 85, 70, 60],
+                    backgroundColor: vibrantPalette,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('launchKpiChart'), {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Active Users',
+                    data: [{ x: 2000, y: 30, r: 25 }],
+                    backgroundColor: 'rgba(20, 184, 166, 0.7)'
+                }, {
+                    label: 'Total Listings',
+                    data: [{ x: 4000, y: 60, r: 40 }],
+                    backgroundColor: 'rgba(248, 113, 113, 0.7)'
+                }, {
+                    label: 'Completed Transactions',
+                    data: [{ x: 800, y: 80, r: 20 }],
+                    backgroundColor: 'rgba(99, 102, 241, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Target Value' } },
+                    y: { title: { display: true, text: 'Achievement %' } }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    tooltip: {
+                        ...tooltipTitleCallback.plugins.tooltip,
+                        callbacks: {
+                            ...tooltipTitleCallback.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+                                return `${label}: ${value.x} (Achieved: ${value.y}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Transaction Commissions', 'Featured Listings', 'Partnership Fees'],
+                datasets: [{
+                    label: 'Revenue Mix',
+                    data: [75, 15, 10],
+                    backgroundColor: ['#14B8A6', '#F87171', '#6366F1'],
+                    borderColor: '#F5F5F4',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('feedbackChart'), {
+            type: 'radar',
+            data: {
+                labels: processLabels(['App Performance', 'Ease of Use (UI/UX)', 'Payment Options', 'Trust & Security Features', 'Customer Support']),
+                datasets: [{
+                    label: 'User Satisfaction Score (out of 10)',
+                    data: [7, 9, 6, 9, 7],
+                    fill: true,
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderColor: '#6366F1',
+                    pointBackgroundColor: '#6366F1',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#6366F1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: false },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: tooltipTitleCallback.plugins
+            }
+        });
+
+        new Chart(document.getElementById('growthChart'), {
+            type: 'line',
+            data: {
+                labels: ['Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Active Users',
+                    data: [5000, 12000, 25000, 50000],
+                    borderColor: '#14B8A6',
+                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Transactions',
+                    data: [1000, 3000, 8000, 15000],
+                    borderColor: '#F87171',
+                    backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: tooltipTitleCallback.plugins
+            }
+        });
+    </script>
+</body>
+</html>

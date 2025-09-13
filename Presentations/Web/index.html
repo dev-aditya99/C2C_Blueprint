@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Blueprint: Hybrid C2C Sales & Rental Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Teal Accent -->
+    <!-- Application Structure Plan: A single-page dashboard with a fixed left sidebar for navigation. The main content area dynamically displays thematic sections: Overview, Market Deep Dive, The Jaipur Case, Competitive Edge, Roadmap, and Business Model. This structure was chosen to break down the dense report into logical, digestible modules, allowing non-linear exploration. It prioritizes user understanding by letting them jump to areas of interest (e.g., an investor might focus on Market and Business Model), making the complex strategy more accessible than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Overview: Goal: Inform/Engage. Method: Key stat cards (HTML/Tailwind) to grab attention. Interaction: Hover effects. Justification: Provides a high-level summary instantly.
+        - Market Deep Dive: Goal: Compare. Method: Bar chart (Chart.js) for market sizes. Interaction: Buttons to toggle between 'Second-Hand' and 'Rental' data, updating the chart and contextual text. Justification: Facilitates direct comparison of the two core market pillars.
+        - Jaipur Case: Goal: Highlight Problem. Method: Two Donut charts (Chart.js) showing adoption vs. trust issues. Interaction: Hover tooltips. Justification: Visually powerful way to demonstrate the core 'trust deficit' problem.
+        - Competitive Edge: Goal: Compare/Organize. Method: A two-column comparison layout (HTML/Tailwind) with Unicode icons. Interaction: Click-to-expand details. Justification: Clearly contrasts the new platform against OLX, highlighting the UVP.
+        - Roadmap: Goal: Show Change. Method: An interactive horizontal timeline (HTML/Tailwind). Interaction: Clicking a phase reveals its details. Justification: Simplifies the multi-year strategy into a clear, step-by-step plan.
+        - Business Model: Goal: Inform. Method: A grid of cards (HTML/Tailwind) for revenue streams. Interaction: Hover to see details. Justification: Presents the diversified revenue strategy in a clean, easy-to-scan format.
+        Library/Method: Chart.js for all charts (Canvas), HTML/CSS/Tailwind for all layouts and diagrams.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F4;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #14B8A6;
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #E5E7EB;
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .phase-card {
+            transition: all 0.3s ease;
+            border-bottom-width: 4px;
+            border-color: transparent;
+        }
+        .phase-card.active {
+            border-color: #14B8A6;
+            background-color: white;
+            transform: translateY(-5px);
+        }
+        .phase-card:not(.active):hover {
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+    <div class="flex min-h-screen">
+        <nav class="w-64 bg-white p-4 shadow-lg fixed h-full">
+            <div class="flex items-center mb-8">
+                <div class="p-2 bg-teal-500 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1014.12 11.88l-4.242 4.242z" />
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold text-stone-800">Woovle</h1>
+            </div>
+            <ul>
+                <li><a href="#" class="nav-link active flex items-center p-3 my-1 rounded-lg" data-view="overview">
+                    <span class="mr-3 text-lg">💡</span> Overview
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center p-3 my-1 rounded-lg" data-view="market">
+                    <span class="mr-3 text-lg">📈</span> Market Deep Dive
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center p-3 my-1 rounded-lg" data-view="jaipur">
+                    <span class="mr-3 text-lg">📍</span> The Jaipur Case
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center p-3 my-1 rounded-lg" data-view="edge">
+                    <span class="mr-3 text-lg">🛡️</span> Competitive Edge
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center p-3 my-1 rounded-lg" data-view="roadmap">
+                    <span class="mr-3 text-lg">🗺️</span> Strategic Roadmap
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center p-3 my-1 rounded-lg" data-view="model">
+                    <span class="mr-3 text-lg">💰</span> Business Model
+                </a></li>
+                <li><a href="./5_months_plan.html" class="flex items-center p-3 my-1 rounded-lg" data-view="plan">
+                    <span class="mr-3 text-lg">⛳</span> 5 Months Plan
+                </a></li>
+                <li><a href="./growth.html" class="flex items-center p-3 my-1 rounded-lg" data-view="growth">
+                    <span class="mr-3 text-lg">✨</span> Growth Dashboard
+                </a></li>
+            </ul>
+        </nav>
+
+        <main class="flex-1 ml-64 p-6 md:p-10">
+            <div id="overview" class="content-section active">
+                <h2 class="text-3xl font-bold mb-2">A New Era for C2C Commerce in India</h2>
+                <p class="text-stone-600 mb-8 max-w-3xl">This is the strategic blueprint for a hybrid Consumer-to-Consumer (C2C) marketplace, combining second-hand sales and peer-to-peer rentals. We address a critical trust deficit in the market to unlock the full potential of India's booming second-hand and sharing economies.</p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="stat-card bg-white p-6 rounded-xl shadow">
+                        <h3 class="font-bold text-teal-600 text-lg mb-2">Second-Hand Market</h3>
+                        <p class="text-4xl font-bold text-stone-800">13.2%</p>
+                        <p class="text-stone-500">Projected CAGR for used apparel through 2033, signaling a massive shift in consumer behavior.</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-xl shadow">
+                        <h3 class="font-bold text-teal-600 text-lg mb-2">Rental Economy</h3>
+                        <p class="text-4xl font-bold text-stone-800">$1.5B+</p>
+                        <p class="text-stone-500">Current market for just furniture, electronics, and bike rentals, driven by millennial preferences.</p>
+                    </div>
+                    <div class="stat-card bg-white p-6 rounded-xl shadow">
+                        <h3 class="font-bold text-red-600 text-lg mb-2">The Trust Deficit</h3>
+                        <p class="text-4xl font-bold text-stone-800">56%</p>
+                        <p class="text-stone-500">of online shoppers in Jaipur face post-purchase problems, creating our core opportunity.</p>
+                    </div>
+                </div>
+                 <div class="mt-10 bg-white p-6 rounded-xl shadow">
+                    <h3 class="text-2xl font-bold mb-4">The Hybrid Advantage</h3>
+                    <p class="text-stone-600 mb-6">Our platform uniquely integrates sales and rentals, creating a fluid ecosystem that maximizes value for users and assets. This dual-functionality caters to a broader spectrum of needs—from temporary access to permanent ownership—all under one trusted roof. This introduction explains how our model creates a more resilient and engaging marketplace by allowing users to seamlessly transition between buying, selling, and renting.</p>
+                    <div class="grid md:grid-cols-2 gap-6 text-center">
+                        <div class="bg-stone-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">For Sellers & Hosts</h4>
+                            <p class="text-stone-600">Monetize underutilized assets through either a quick sale or recurring rental income. A single listing can serve both purposes, maximizing earning potential and reducing idle time for valuable items.</p>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">For Buyers & Renters</h4>
+                            <p class="text-stone-600">Gain affordable access to a vast array of goods. "Try before you buy" through renting, or find unique items at a fraction of the retail cost. Our platform provides flexibility for every budget and need.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="market" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">Market Deep Dive</h2>
+                <p class="text-stone-600 mb-6 max-w-3xl">India's consumer landscape is undergoing a seismic shift towards access and sustainability. This section allows you to explore the significant growth drivers and key categories in both the second-hand and rental markets. Use the buttons below to toggle the chart and see how each market contributes to our overall opportunity.</p>
+                <div class="text-center mb-6">
+                    <button id="showSecondHand" class="bg-teal-500 text-white px-4 py-2 rounded-lg shadow mr-2">Second-Hand Market</button>
+                    <button id="showRental" class="bg-white text-stone-700 px-4 py-2 rounded-lg shadow">Rental Economy</button>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-2">
+                             <div class="chart-container">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="market-context" class="flex flex-col justify-center">
+                            <h3 id="market-title" class="text-2xl font-bold mb-4">India Second-Hand Market</h3>
+                            <p id="market-text" class="text-stone-600">The second-hand market is booming, led by categories like apparel with a projected 13.20% CAGR. This growth is fueled by consumer demand for value, unique items, and sustainable fashion choices. Women's apparel and ethnic wear are particularly strong segments, representing a key entry point for our platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jaipur" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">The Jaipur Case: A Microcosm of Opportunity</h2>
+                <p class="text-stone-600 mb-8 max-w-3xl">Our strategy begins with a hyperlocal focus on Jaipur, a thriving Tier-2 city. While digital adoption is high, a significant trust deficit persists, creating a perfect entry point for a platform built on security. This section visualizes the core challenge and opportunity in our initial target market.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-4 text-center">Digital Adoption vs. Consumer Trust</h3>
+                        <div class="chart-container h-64 md:h-80">
+                            <canvas id="jaipurTrustChart"></canvas>
+                        </div>
+                        <p class="text-center text-stone-500 mt-4">High online shopping adoption is undermined by a strong preference for COD and frequent post-purchase issues.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-4 text-center">The Local Demand</h3>
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="jaipurDemandChart"></canvas>
+                        </div>
+                        <p class="text-center text-stone-500 mt-4">Jaipur shows strong, validated demand for both second-hand goods and rental services, especially in key categories.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="edge" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">Our Competitive Edge: Building on Trust</h2>
+                <p class="text-stone-600 mb-8 max-w-3xl">Existing platforms are plagued by fraud and a lack of user protection. Our unique value proposition is a secure, transparent, and hassle-free ecosystem. This section directly compares our trust-centric model to the vulnerabilities of current market leaders like OLX, showcasing how we solve critical user pain points.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow border-t-4 border-red-400">
+                        <h3 class="text-2xl font-bold mb-4 text-center">The Old Way (e.g., OLX)</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">⚠️</span><div><strong class="block">Pervasive Fraud Risk</strong><span>Users exposed to QR code scams, impersonation, and advance payment fraud.</span></div></li>
+                            <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">🚫</span><div><strong class="block">No Transaction Control</strong><span>Payments and communication happen off-platform, leaving users vulnerable.</span></div></li>
+                            <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">🧩</span><div><strong class="block">Reactive Dispute Resolution</strong><span>Support is available, but the system is not designed to prevent problems proactively.</span></div></li>
+                             <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">❓</span><div><strong class="block">Unverified Users</strong><span>Basic SMS verification is easily bypassed, enabling anonymous fraudsters.</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border-t-4 border-teal-500">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Our Way: The Trusted Marketplace</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="text-teal-500 mr-3 text-xl">🛡️</span><div><strong class="block">Integrated Escrow System</strong><span>Funds are held securely by the platform until the buyer confirms satisfaction, eliminating advance payment scams.</span></div></li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-3 text-xl">✅</span><div><strong class="block">Verified Identity (Tiered KYC)</strong><span>Robust identity checks for sellers/hosts build a foundation of trust and accountability.</span></div></li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-3 text-xl">⚖️</span><div><strong class="block">Proactive & Mediated Dispute Resolution</strong><span>Clear, in-platform processes to resolve issues fairly and efficiently, with platform mediation if needed.</span></div></li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-3 text-xl">🤖</span><div><strong class="block">AI-Powered Fraud Detection</strong><span>Machine learning models analyze behavior in real-time to proactively identify and block suspicious activity.</span></div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="roadmap" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">Strategic Roadmap</h2>
+                <p class="text-stone-600 mb-8 max-w-3xl">Our growth is structured in three distinct phases, starting with a focused launch and scaling methodically towards technological leadership. This interactive timeline outlines our journey from a local MVP to a national ecosystem leader. Click on each phase to see the key objectives and actions.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div id="phase1" class="phase-card active bg-white p-6 rounded-lg shadow-sm cursor-pointer">
+                        <p class="text-sm font-bold text-teal-600">PHASE 1</p>
+                        <h3 class="text-xl font-bold">Hyperlocal Niche Dominance</h3>
+                    </div>
+                    <div id="phase2" class="phase-card p-6 rounded-lg bg-stone-100 cursor-pointer">
+                        <p class="text-sm font-bold text-teal-600">PHASE 2</p>
+                        <h3 class="text-xl font-bold">Scalable Expansion</h3>
+                    </div>
+                    <div id="phase3" class="phase-card p-6 rounded-lg bg-stone-100 cursor-pointer">
+                        <p class="text-sm font-bold text-teal-600">PHASE 3</p>
+                        <h3 class="text-xl font-bold">Technological Leadership</h3>
+                    </div>
+                </div>
+
+                <div id="roadmap-details" class="bg-white p-8 rounded-xl shadow">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+
+            <div id="model" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">Business Model & Revenue</h2>
+                <p class="text-stone-600 mb-8 max-w-3xl">Our financial viability is built on a diversified and scalable revenue model, ensuring resilience and multiple income avenues. This section breaks down our primary revenue streams, from core transaction commissions to value-added services that enhance the user experience.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Commission Fees</h3>
+                        <p class="text-stone-600">The core of our model. We take a small percentage of every successful sale and rental transaction, directly aligning our success with our users'.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Premium Listings</h3>
+                        <p class="text-stone-600">Sellers and hosts can pay a fee to feature their listings, gaining increased visibility and priority placement in search results for faster transactions.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Targeted Advertising</h3>
+                        <p class="text-stone-600">Leveraging user data, we can offer targeted advertising opportunities for relevant businesses seeking to reach our engaged consumer base.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Value-Added Services</h3>
+                        <p class="text-stone-600">Offering optional paid services like professional item inspection, enhanced cleaning, or streamlined logistics facilitation.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Insurance Plans</h3>
+                        <p class="text-stone-600">For high-value rentals, we will offer optional, platform-backed protection plans to mitigate risk for both owners and renters, generating an additional revenue stream.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-bold mb-2">Subscription Tiers</h3>
+                        <p class="text-stone-600">Future potential for power-sellers or businesses to subscribe to monthly plans for reduced fees, advanced analytics, and dedicated support.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            let marketChartInstance;
+            let jaipurTrustChartInstance;
+            let jaipurDemandChartInstance;
+
+            const dataStore = {
+                market: {
+                    secondHand: {
+                        labels: ['Apparel', 'Household Items', 'Electronics', 'Ethnic Wear'],
+                        data: [3500, 2500, 2000, 1500],
+                        title: 'India Second-Hand Market (USD Millions)',
+                        contextTitle: 'India Second-Hand Market',
+                        contextText: "The second-hand market is booming, led by categories like apparel with a projected 13.20% CAGR. This growth is fueled by consumer demand for value, unique items, and sustainable fashion choices. Women's apparel and ethnic wear are particularly strong segments, representing a key entry point for our platform."
+                    },
+                    rental: {
+                        labels: ['Furniture', 'Appliances', 'Bikes', 'Construction Eq.', 'Event Wear'],
+                        data: [850, 500, 300, 111800, 200],
+                        title: 'Indian Rental Market (USD Millions)',
+                        contextTitle: 'The Indian Rental Economy',
+                        contextText: "Driven by millennials who prioritize access over ownership, the rental economy is expanding rapidly. Key drivers include affordability, flexibility, and convenience, with strong demand for furniture, appliances, and even high-value construction equipment."
+                    }
+                },
+                jaipur: {
+                    trust: {
+                        labels: ['Prefer COD', 'Face Post-Purchase Issues', 'Feel Safe Shopping Online'],
+                        data: [63, 56, 70],
+                    },
+                    demand: {
+                        labels: ['Used Household Items', 'Used Electronics', 'Furniture Rentals', 'Appliance Rentals'],
+                        data: [85, 75, 70, 65],
+                    }
+                },
+                roadmap: {
+                    phase1: {
+                        title: 'Phase 1: Hyperlocal Niche Dominance (Jaipur Focus)',
+                        details: `
+                            <ul class="list-disc list-inside space-y-3 text-stone-600">
+                                <li>Launch a lean, hybrid MVP with core sales and rental features in Jaipur.</li>
+                                <li>Focus on high-demand niches like women's fashion and household electronics to build initial liquidity.</li>
+                                <li>Integrate foundational trust features: Escrow, Tiered KYC, and Dispute Resolution.</li>
+                                <li>Execute targeted, localized marketing campaigns emphasizing security and trust to counter COD preference.</li>
+                            </ul>
+                        `
+                    },
+                    phase2: {
+                        title: 'Phase 2: Scalable Expansion & Value-Added Services',
+                        details: `
+                            <ul class="list-disc list-inside space-y-3 text-stone-600">
+                                <li>Replicate the successful Jaipur model in other promising Tier-2 cities.</li>
+                                <li>Strategically expand product categories based on data and user demand.</li>
+                                <li>Establish partnerships for value-added services like logistics, quality checks, and maintenance.</li>
+                                <li>Enhance platform with advanced features like personalized recommendations and loyalty programs.</li>
+                            </ul>
+                        `
+                    },
+                    phase3: {
+                        title: 'Phase 3: Technological Leadership & Ecosystem Development',
+                        details: `
+                             <ul class="list-disc list-inside space-y-3 text-stone-600">
+                                <li>Invest heavily in AI/ML for advanced personalization, dynamic pricing, and predictive analytics.</li>
+                                <li>Explore and integrate IoT solutions for high-value rental asset tracking and management (Product-as-a-Service).</li>
+                                <li>Develop a strong community through social features, fostering a self-sustaining ecosystem.</li>
+                                <li>Begin planning for potential international expansion into similar emerging markets.</li>
+                            </ul>
+                        `
+                    }
+                }
+            };
+
+            function switchView(viewId) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.view === viewId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === viewId);
+                });
+
+                if (viewId === 'market') {
+                    renderMarketChart('secondHand');
+                } else if (viewId === 'jaipur') {
+                    renderJaipurCharts();
+                } else if (viewId === 'roadmap'){
+                    renderRoadmapDetails('phase1');
+                }
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = e.currentTarget.dataset.view;
+                    switchView(viewId);
+                });
+            });
+
+            function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+                const words = text.split(' ');
+                let line = '';
+                for(let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    const testWidth = metrics.width;
+                    if (testWidth > maxWidth && n > 0) {
+                        ctx.fillText(line, x, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, x, y);
+            }
+
+            const chartDefaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#44403C',
+                            font: {
+                                family: "'Inter', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1F2937',
+                        titleFont: {
+                            family: "'Inter', sans-serif",
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: "'Inter', sans-serif",
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#E5E7EB'
+                        },
+                        ticks: {
+                            color: '#57534E'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#57534E',
+                             maxRotation: 0,
+                             minRotation: 0,
+                             callback: function(value, index, values) {
+                                const label = this.getLabelForValue(value);
+                                return label.length > 16 ? label.substring(0, 15) + '...' : label;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            function renderMarketChart(type) {
+                const marketCtx = document.getElementById('marketChart').getContext('2d');
+                if (marketChartInstance) {
+                    marketChartInstance.destroy();
+                }
+                const chartData = dataStore.market[type];
+                document.getElementById('market-title').textContent = chartData.contextTitle;
+                document.getElementById('market-text').textContent = chartData.contextText;
+
+                marketChartInstance = new Chart(marketCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: chartData.title,
+                            data: chartData.data,
+                            backgroundColor: '#14B8A6',
+                            borderColor: '#0F766E',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: chartDefaultOptions
+                });
+            }
+
+            function renderJaipurCharts() {
+                const trustCtx = document.getElementById('jaipurTrustChart').getContext('2d');
+                const demandCtx = document.getElementById('jaipurDemandChart').getContext('2d');
+                
+                if(jaipurTrustChartInstance) jaipurTrustChartInstance.destroy();
+                if(jaipurDemandChartInstance) jaipurDemandChartInstance.destroy();
+
+                const donutOptions = {
+                     responsive: true,
+                     maintainAspectRatio: false,
+                     cutout: '60%',
+                     plugins: {
+                        legend: { position: 'bottom', labels: { color: '#44403C', font: { family: "'Inter', sans-serif" }}},
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                     }
+                };
+
+                jaipurTrustChartInstance = new Chart(trustCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: dataStore.jaipur.trust.labels,
+                        datasets: [{
+                            label: 'Jaipur Consumer Behavior (%)',
+                            data: dataStore.jaipur.trust.data,
+                            backgroundColor: ['#F87171', '#FB923C', '#34D399'],
+                        }]
+                    },
+                    options: donutOptions
+                });
+
+                jaipurDemandChartInstance = new Chart(demandCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: dataStore.jaipur.demand.labels,
+                        datasets: [{
+                            label: 'Validated Demand in Jaipur (%)',
+                            data: dataStore.jaipur.demand.data,
+                            backgroundColor: ['#60A5FA', '#818CF8', '#A78BFA', '#F472B6'],
+                        }]
+                    },
+                    options: donutOptions
+                });
+            }
+
+            function renderRoadmapDetails(phaseId) {
+                document.querySelectorAll('.phase-card').forEach(card => {
+                    card.classList.toggle('active', card.id === phaseId);
+                    card.classList.toggle('bg-white', card.id === phaseId);
+                    card.classList.toggle('bg-stone-100', card.id !== phaseId);
+                });
+                const detailsContainer = document.getElementById('roadmap-details');
+                const phaseData = dataStore.roadmap[phaseId];
+                detailsContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-4">${phaseData.title}</h3>
+                    ${phaseData.details}
+                `;
+            }
+
+            document.getElementById('showSecondHand').addEventListener('click', (e) => {
+                renderMarketChart('secondHand');
+                e.target.classList.add('bg-teal-500', 'text-white');
+                document.getElementById('showRental').classList.remove('bg-teal-500', 'text-white');
+            });
+            document.getElementById('showRental').addEventListener('click', (e) => {
+                renderMarketChart('rental');
+                e.target.classList.add('bg-teal-500', 'text-white');
+                document.getElementById('showSecondHand').classList.remove('bg-teal-500', 'text-white');
+            });
+
+            document.querySelectorAll('.phase-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    renderRoadmapDetails(e.currentTarget.id);
+                });
+            });
+
+            switchView('overview');
+            renderRoadmapDetails('phase1');
+        });
+    </script>
+</body>
+</html>
